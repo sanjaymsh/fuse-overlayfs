@@ -3,6 +3,9 @@ services:
 env:
   - GOPATH=$HOME/go GOROOT=/usr/local/go GO=/usr/local/go/bin/go PATH=/usr/local/go/bin:$PATH
 language: c
+arch:
+  - amd64
+  - ppc64le
 sudo: required
 dist: focal
 addons:
@@ -27,7 +30,8 @@ addons:
       - parallel
 before_install:
   - docker pull fedora &
-  - (wget https://dl.google.com/go/go1.13.7.linux-amd64.tar.gz && tar xf go1.13.7.linux-amd64.tar.gz && sudo mv go /usr/local)
+  - if [ "$TRAVIS_ARCH" = "amd64" ]; then (wget https://dl.google.com/go/go1.13.7.linux-amd64.tar.gz && tar xf go1.13.7.linux-amd64.tar.gz && sudo mv go /usr/local); fi
+  - if [ "$TRAVIS_ARCH" = "ppc64le" ]; then (wget https://golang.org/dl/go1.15.2.linux-ppc64le.tar.gz && tar xf go1.15.2.linux-ppc64le.tar.gz && sudo mv go /usr/local); fi
   - sudo mkdir -p /lower /upper /mnt
   - (cd /; sudo git clone https://github.com/amir73il/unionmount-testsuite.git)
   - (git clone --depth 1 git://github.com/ninja-build/ninja.git && cd ninja && python3.8 configure.py --bootstrap && sudo cp ninja /usr/bin)
